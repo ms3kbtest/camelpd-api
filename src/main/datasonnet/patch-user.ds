@@ -1,0 +1,21 @@
+/** DataSonnet
+version=2.0
+output application/json
+input payload application/json
+*/
+local nullOrValue(param) =
+if(param in payload) then payload[param] else null;
+
+local settingsNullOrValue(param) =
+if('settings' in payload && param in payload['settings']) then payload['settings'][param] else null;
+
+{
+  firstName: nullOrValue('firstName'),
+  lastName: nullOrValue('lastName'),
+  username: nullOrValue('username'),
+  email: nullOrValue('email'),
+  birthday: nullOrValue('birthday'),
+  appAlerts: settingsNullOrValue('appAlerts'),
+  emailNotifications: settingsNullOrValue('emailNotifications'),
+  theme : settingsNullOrValue('theme')
+}

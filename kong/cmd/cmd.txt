@@ -1,0 +1,19 @@
+kubectl port-forward deploy/kong-ee-kong 8001
+kubectl port-forward deploy/kong-ee-kong 8003
+kubectl port-forward deploy/kong-ee-kong 8004
+
+kubectl port-forward deploy/cp-release-kong 8001
+
+curl -X POST http://camelpd.com:8001/default/files -F "path=specs/pd-sys-api.yaml" -F "contents=@kong/crd/pd-sys-api.yaml" -H "Kong-Admin-Token: kong"
+// get oas file
+curl -X GET http://camelpd.com:8001/default/files/specs/pd-sys-api.yaml -H "Kong-Admin-Token: kong"
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzb21lLWtleSJ9.N_XnPZrw35jox93foK5q7p-nvZdNnZHMpPaTfJR2x7w
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ1c2VyLWlzc3VlciJ9.zji-omxNGR1-PXvXRXTIKhB5OPZ7u52DYdjyPARbb-A
+kubectl create secret generic app-user-jwt --from-literal=kongCredType=jwt --from-literal=key="user-issuer" --from-literal=algorithm=HS256 --from-literal=secret="ultraSecretPasskey"
+
+kubectl config set-context dev \
+  --namespace=camelpd-dev \
+  --cluster=docker-desktop \
+  --user=docker-desktop

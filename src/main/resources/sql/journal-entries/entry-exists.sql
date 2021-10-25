@@ -1,0 +1,1 @@
+SELECT * FROM journal_entries_table WHERE entry_id = :#journalEntryId AND user_id = :#userId;

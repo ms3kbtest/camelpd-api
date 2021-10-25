@@ -1,0 +1,40 @@
+# The "env.cluster_control_plane" value must be changed to your control plane
+# instance's cluster Service hostname. Replace YOURCONTROLSERVICENAME with the name of your Kong cluster control plane service, or the one at port 8005
+# if running from the other example file. Replace YOURCONTROLSERVICENAMESPACE with the namespace that service is created in, if you did not specify one, just mark it as 'default'
+#
+# Hybrid mode requires a certificate. See https://github.com/Kong/charts/blob/main/charts/kong/README.md#certificates
+# to create one.
+
+image:
+  repository: kong
+  tag: latest
+
+env:
+  prefix: /kong_prefix/
+  database: "off"
+  role: data_plane
+  cluster_control_plane: cp-release-kong-cluster.camelpd-dev.svc.cluster.local:8005
+  lua_ssl_trusted_certificate: /etc/secrets/kong-cluster-cert/tls.crt
+  cluster_cert: /etc/secrets/kong-cluster-cert/tls.crt
+  cluster_cert_key: /etc/secrets/kong-cluster-cert/tls.key
+  # Add telemetry if using kong ee
+
+admin:
+  enabled: false
+
+secretVolumes:
+- kong-cluster-cert
+
+proxy:
+  http:
+    servicePort: 9000
+
+# New addition for custom plugins below
+plugins:
+  configMaps:
+    - pluginName: name-restrict
+      name: kong-plugin-name-restrict
+
+ingressController:
+  enabled: false
+  installCRDs: false

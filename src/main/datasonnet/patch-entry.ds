@@ -1,0 +1,17 @@
+/** DataSonnet
+version=2.0
+output application/json
+input payload application/json
+*/
+local nullOrValue(param) =
+if(param in payload) then payload[param] else null;
+
+local zeroOrValue(val) =
+if val == null then 0 else val;
+
+{
+  date: nullOrValue('date'),
+  summary: nullOrValue('summary'),
+  positives: nullOrValue('positives'),
+  moodScore: zeroOrValue(nullOrValue('moodScore'))
+}

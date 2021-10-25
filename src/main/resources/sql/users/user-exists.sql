@@ -1,0 +1,1 @@
+SELECT * FROM users_table WHERE id = :#userId;

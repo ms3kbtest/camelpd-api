@@ -1,0 +1,15 @@
+apiVersion: configuration.konghq.com/v1
+kind: KongPlugin
+metadata:
+  name: name-restrict
+config:
+  restrictedStringSet:
+    - "admin"
+    - "default"
+    - "test"
+    - "username"
+  restrictedFieldName: "username"
+  methods:
+    - "PATCH"
+    - "POST"
+plugin: name-restrict

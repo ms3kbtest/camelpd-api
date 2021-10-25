@@ -1,0 +1,2088 @@
+{
+	"info": {
+		"_postman_id": "cebe4b65-a0f2-4e9c-b626-253e09395fc5",
+		"name": "Camel PD",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "POST",
+					"item": [
+						{
+							"name": "Add User",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"postman.setEnvironmentVariable(\"newUserPath\", pm.response.headers.get('Location'));\r",
+											"\r",
+											"pm.test(\"Status code test\", () => {\r",
+											"    pm.response.to.have.status(201);\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Resource location in header test\", () => {\r",
+											"    pm.response.to.have.header(\"Location\");\r",
+											"   pm.response.to.be.header(\"Location\", pm.environment.get(\"newUserPath\"));\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Response time is less than 1000ms\", () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"firstName\": \"Test\",\r\n  \"lastName\": \"Test\",\r\n  \"username\": \"{{$randomUserName}}\",\r\n  \"email\": \"{{$randomEmail}}\",\r\n  \"birthday\": \"2021-05-20\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/users",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add User Incomplete",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code test\", () => {\r",
+											"    pm.response.to.have.status(400);\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"firstName\": \"Test\",\r\n  \"lastName\": \"Test\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/users",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Temp User",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"postman.setEnvironmentVariable(\"tempUserPath\", pm.response.headers.get('Location'));\r",
+											"\r",
+											"pm.test(\"Status code test\", () => {\r",
+											"    pm.response.to.have.status(201);\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Resource location in header test\", () => {\r",
+											"    pm.response.to.have.header(\"Location\");\r",
+											"   pm.response.to.be.header(\"Location\", pm.environment.get(\"tempUserPath\"));\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Response time is less than 1000ms\", () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"firstName\": \"Test\",\r\n  \"lastName\": \"Test\",\r\n  \"username\": \"test_temp\",\r\n  \"email\": \"test@test_temp\",\r\n  \"birthday\": \"2021-05-20\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/users",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add User Email Exist",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code test\", () => {\r",
+											"    pm.response.to.have.status(400);\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"firstName\": \"Test\",\r\n  \"lastName\": \"Test\",\r\n  \"username\": \"test_temp\",\r\n  \"email\": \"test@test_temp\",\r\n  \"birthday\": \"2021-05-20\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/users",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"users"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GET",
+					"item": [
+						{
+							"name": "Get Users",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var data = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Responses status code\", () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Get all users\", () => {\r",
+											"    pm.expect(data.length).to.equal(2)\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Get content type\", () => {\r",
+											"    pm.response.to.have.header(\"Content-Type\");\r",
+											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');\r",
+											"})\r",
+											"\r",
+											"const schema = {\r",
+											"    \"properties\": {\r",
+											"        \"userId\": {\r",
+											"        \"type\": \"integer\"\r",
+											"        },\r",
+											"        \"firstName\": {\r",
+											"            \"type\": \"string\"\r",
+											"        },\r",
+											"        \"lastName\": {\r",
+											"            \"type\": \"string\"\r",
+											"        },\r",
+											"        \"username\": {\r",
+											"            \"type\": \"string\"\r",
+											"        },\r",
+											"        \"email\": {\r",
+											"            \"type\": \"string\"\r",
+											"        },\r",
+											"        \"birthday\": {\r",
+											"            \"type\": \"string\"\r",
+											"        },\r",
+											"        \"settings\": {\r",
+											"            \"type\": \"object\"\r",
+											"        },\r",
+											"        \"appointments\": {\r",
+											"            \"type\": \"array\"\r",
+											"        },\r",
+											"        \"tasks\": {\r",
+											"            \"type\": \"array\"\r",
+											"        }\r",
+											"    }\r",
+											"}\r",
+											"\r",
+											"pm.test(\"Validate schema\", () => {\r",
+											"    pm.response.to.have.jsonSchema(schema);\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/users",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get One User",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var data = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Responses status code\", () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Get content type\", () => {\r",
+											"    pm.response.to.have.header(\"Content-Type\");\r",
+											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');\r",
+											"})\r",
+											"\r",
+											"const schema = {\r",
+											"    \"properties\": {\r",
+											"        \"userId\": {\r",
+											"        \"type\": \"integer\"\r",
+											"        },\r",
+											"        \"firstName\": {\r",
+											"            \"type\": \"string\"\r",
+											"        },\r",
+											"        \"lastName\": {\r",
+											"            \"type\": \"string\"\r",
+											"        },\r",
+											"        \"username\": {\r",
+											"            \"type\": \"string\"\r",
+											"        },\r",
+											"        \"email\": {\r",
+											"            \"type\": \"string\"\r",
+											"        },\r",
+											"        \"birthday\": {\r",
+											"            \"type\": \"string\"\r",
+											"        },\r",
+											"        \"settings\": {\r",
+											"            \"type\": \"object\"\r",
+											"        },\r",
+											"        \"appointments\": {\r",
+											"            \"type\": \"array\"\r",
+											"        },\r",
+											"        \"tasks\": {\r",
+											"            \"type\": \"array\"\r",
+											"        }\r",
+											"    }\r",
+											"}\r",
+											"\r",
+											"pm.test(\"Validate schema\", () => {\r",
+											"    pm.response.to.have.jsonSchema(schema);\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}{{newUserPath}}",
+									"host": [
+										"{{domain}}{{newUserPath}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get User Not Exist",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Responses status code\", () => {\r",
+											"    pm.response.to.have.status(404);\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/users/0",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"users",
+										"0"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "PATCH",
+					"item": [
+						{
+							"name": "Update User Complete",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code test\", () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Resource location in header test\", () => {\r",
+											"    pm.response.to.have.header(\"Location\");\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Response time is less than 200ms\", () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"firstName\": \"Only\",\r\n  \"lastName\": \"Temp\",\r\n  \"username\": \"test3\",\r\n  \"email\": \"test3@test_full\",\r\n  \"birthday\": \"1999-02-16\",\r\n  \"settings\": {\r\n            \"appAlerts\": false,\r\n            \"emailNotifications\": true,\r\n            \"theme\": 1\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}{{newUserPath}}",
+									"host": [
+										"{{domain}}{{newUserPath}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update User",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code test\", () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Resource location in header test\", () => {\r",
+											"    pm.response.to.have.header(\"Location\");\r",
+											"   pm.response.to.be.header(\"Location\", pm.environment.get(\"newUserPath\"));\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Response time is less than 200ms\", () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"firstName\": \"Patch\",\r\n  \"lastName\": \"Test\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}{{newUserPath}}",
+									"host": [
+										"{{domain}}{{newUserPath}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "DELETE",
+					"item": [
+						{
+							"name": "Delete User",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Test delete no content\", () => {\r",
+											"    pm.response.to.have.status(204);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 200ms\", () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}{{tempUserPath}}",
+									"host": [
+										"{{domain}}{{tempUserPath}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Not Exist",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Test delete no content\", () => {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 200ms\", () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}{{tempUserPath}}",
+									"host": [
+										"{{domain}}{{tempUserPath}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Appointments",
+			"item": [
+				{
+					"name": "POST",
+					"item": [
+						{
+							"name": "Add Appointment",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"postman.setEnvironmentVariable(\"newApptPath\", pm.response.headers.get('Location'));\r",
+											"\r",
+											"pm.test(\"Status code test\", () => {\r",
+											"    pm.response.to.have.status(201);\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Resource location in header test\", () => {\r",
+											"    pm.response.to.have.header(\"Location\");\r",
+											"   pm.response.to.be.header(\"Location\", pm.environment.get(\"newApptPath\"));\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Response time is less than 1000ms\", () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"date\": \"2020-01-02\",\r\n  \"startTime\": \"2018-03-20T13:00:00Z\",\r\n  \"endTime\": \"2018-03-20T14:00:00Z\",\r\n  \"description\" : \"Some text\",\r\n  \"appointmentNotes\" : \"Some notes\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}{{newUserPath}}/appointments",
+									"host": [
+										"{{domain}}{{newUserPath}}"
+									],
+									"path": [
+										"appointments"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Appointment Incomplete",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code test\", () => {\r",
+											"    pm.response.to.have.status(400);\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Response time is less than 1000ms\", () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"date\": \"2020-01-02\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}{{newUserPath}}/appointments",
+									"host": [
+										"{{domain}}{{newUserPath}}"
+									],
+									"path": [
+										"appointments"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Appoinment To Query",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code test\", () => {\r",
+											"    pm.response.to.have.status(201);\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Resource location in header test\", () => {\r",
+											"    pm.response.to.have.header(\"Location\");\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"date\": \"2020-01-05\",\r\n  \"startTime\": \"2018-03-20T13:00:00Z\",\r\n  \"endTime\": \"2018-03-20T14:00:00Z\",\r\n  \"description\" : \"Query Me\",\r\n  \"appointmentNotes\" : \"Some notes\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}{{newUserPath}}/appointments",
+									"host": [
+										"{{domain}}{{newUserPath}}"
+									],
+									"path": [
+										"appointments"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Appointment Required",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code test\", () => {\r",
+											"    pm.response.to.have.status(201);\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Resource location in header test\", () => {\r",
+											"    pm.response.to.have.header(\"Location\");\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"date\": \"2020-01-02\",\r\n  \"startTime\": \"2018-03-20T13:00:00Z\",\r\n  \"endTime\": \"2018-03-20T14:00:00Z\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}{{newUserPath}}/appointments",
+									"host": [
+										"{{domain}}{{newUserPath}}"
+									],
+									"path": [
+										"appointments"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GET",
+					"item": [
+						{
+							"name": "Get Appointments",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var data = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Responses status code\", () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Get all user appointments\", () => {\r",
+											"    pm.expect(data.length).to.equal(3)\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Get content type\", () => {\r",
+											"    pm.response.to.have.header(\"Content-Type\");\r",
+											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}{{newUserPath}}/appointments",
+									"host": [
+										"{{domain}}{{newUserPath}}"
+									],
+									"path": [
+										"appointments"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get One Appointment",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// TODO: Clean get appt return\r",
+											"var data = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Responses status code\", () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"})\r",
+											"\r",
+											"\r",
+											"pm.test(\"Get content type\", () => {\r",
+											"    pm.response.to.have.header(\"Content-Type\");\r",
+											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');\r",
+											"})\r",
+											"\r",
+											"const schema = {\r",
+											"    \"properties\": {\r",
+											"        \"appointmentId\": {\r",
+											"        \"type\": \"integer\"\r",
+											"        },\r",
+											"        \"userId\": {\r",
+											"            \"type\": \"integer\"\r",
+											"        },\r",
+											"        \"date\": {\r",
+											"            \"type\": \"string\"\r",
+											"        },\r",
+											"        \"startTime\": {\r",
+											"            \"type\": \"string\"\r",
+											"        },\r",
+											"        \"endTime\": {\r",
+											"            \"type\": \"string\"\r",
+											"        },\r",
+											"        \"description\": {\r",
+											"            \"type\": [\"string\", \"null\"]\r",
+											"        },\r",
+											"        \"appointmentNotes\": {\r",
+											"            \"type\": [\"string\", \"null\"]\r",
+											"        }\r",
+											"    }\r",
+											"}\r",
+											"\r",
+											"pm.test(\"Validate schema\", () => {\r",
+											"    pm.response.to.have.jsonSchema(schema);\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}{{newApptPath}}",
+									"host": [
+										"{{domain}}{{newApptPath}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Appointments With Query",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var data = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Responses status code\", () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Get all user appointments\", () => {\r",
+											"    pm.expect(data.length).to.equal(1)\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Get content type\", () => {\r",
+											"    pm.response.to.have.header(\"Content-Type\");\r",
+											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}{{newUserPath}}/appointments?fromDate=2020-01-04&toDate=2020-01-05&descKeywords=query",
+									"host": [
+										"{{domain}}{{newUserPath}}"
+									],
+									"path": [
+										"appointments"
+									],
+									"query": [
+										{
+											"key": "fromDate",
+											"value": "2020-01-04"
+										},
+										{
+											"key": "toDate",
+											"value": "2020-01-05"
+										},
+										{
+											"key": "descKeywords",
+											"value": "query"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Appointment Not Exist",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Responses status code\", () => {\r",
+											"    pm.response.to.have.status(404);\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}{{newUserPath}}/appointments/0",
+									"host": [
+										"{{domain}}{{newUserPath}}"
+									],
+									"path": [
+										"appointments",
+										"0"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "PATCH",
+					"item": [
+						{
+							"name": "Patch Appointment",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code test\", () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Resource location in header test\", () => {\r",
+											"    pm.response.to.have.header(\"Location\");\r",
+											"   pm.response.to.be.header(\"Location\", pm.environment.get(\"newApptPath\"));\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 200ms\", () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"date\": \"2020-01-02\",\r\n  \"description\": \"Some type of meeting\",\r\n  \"appointmentNotes\" : \"Moved appointment to next day\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}{{newApptPath}}",
+									"host": [
+										"{{domain}}{{newApptPath}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Patch Appointment Complete",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code test\", () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Resource location in header test\", () => {\r",
+											"    pm.response.to.have.header(\"Location\");\r",
+											"   pm.response.to.be.header(\"Location\", pm.environment.get(\"newApptPath\"));\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 200ms\", () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"date\": \"2020-01-03\",\r\n  \"startTime\": \"2018-03-20T14:00:00Z\",\r\n  \"endTime\": \"2018-03-20T15:00:00Z\",\r\n  \"description\" : \"Patched Description\",\r\n  \"appointmentNotes\" : \"Patched Notes\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}{{newApptPath}}",
+									"host": [
+										"{{domain}}{{newApptPath}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "DELETE",
+					"item": [
+						{
+							"name": "Delete Appointment",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Test delete no content\", () => {\r",
+											"    pm.response.to.have.status(204);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 200ms\", () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}{{newApptPath}}",
+									"host": [
+										"{{domain}}{{newApptPath}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Appointment Not Exist",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Test delete no content\", () => {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 200ms\", () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}{{newApptPath}}",
+									"host": [
+										"{{domain}}{{newApptPath}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Tasks",
+			"item": [
+				{
+					"name": "POST",
+					"item": [
+						{
+							"name": "Add Task",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"postman.setEnvironmentVariable(\"newTaskPath\", pm.response.headers.get('Location'));\r",
+											"\r",
+											"pm.test(\"Status code test\", () => {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Resource location in header test\", () => {\r",
+											"    pm.response.to.have.header(\"Location\");\r",
+											"   pm.response.to.be.header(\"Location\", pm.environment.get(\"newTaskPath\"));\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 200ms\", () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"done\": false,\r\n  \"name\": \"Project OAS\",\r\n  \"deadline\": \"2021-05-20T13:00:00Z\",\r\n  \"progress\": 50,\r\n  \"priority\": 10\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}{{newUserPath}}/tasks",
+									"host": [
+										"{{domain}}{{newUserPath}}"
+									],
+									"path": [
+										"tasks"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Task Required",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code test\", () => {\r",
+											"    pm.response.to.have.status(201);\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Resource location in header test\", () => {\r",
+											"    pm.response.to.have.header(\"Location\");\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Response time is less than 1000ms\", () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"done\": true,\r\n  \"name\": \"Project OAS\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}{{newUserPath}}/tasks",
+									"host": [
+										"{{domain}}{{newUserPath}}"
+									],
+									"path": [
+										"tasks"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Task Extra",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code test\", () => {\r",
+											"    pm.response.to.have.status(201);\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Resource location in header test\", () => {\r",
+											"    pm.response.to.have.header(\"Location\");\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Response time is less than 1000ms\", () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"done\": false,\r\n  \"name\": \"Optimize User Query\",\r\n  \"deadline\": \"2021-05-20T12:00:00Z\",\r\n  \"progress\": 99,\r\n  \"priority\": 10\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}{{newUserPath}}/tasks",
+									"host": [
+										"{{domain}}{{newUserPath}}"
+									],
+									"path": [
+										"tasks"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GET",
+					"item": [
+						{
+							"name": "Get Tasks",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var data = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Responses status code\", () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Get all user tasks\", () => {\r",
+											"    pm.expect(data.length).to.equal(3)\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Get content type\", () => {\r",
+											"    pm.response.to.have.header(\"Content-Type\");\r",
+											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}{{newUserPath}}/tasks",
+									"host": [
+										"{{domain}}{{newUserPath}}"
+									],
+									"path": [
+										"tasks"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get One Task",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var data = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Responses status code\", () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"})\r",
+											"\r",
+											"\r",
+											"pm.test(\"Get content type\", () => {\r",
+											"    pm.response.to.have.header(\"Content-Type\");\r",
+											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');\r",
+											"})\r",
+											"\r",
+											"const schema = {\r",
+											"    \"properties\": {\r",
+											"        \"taskId\": {\r",
+											"        \"type\": \"integer\"\r",
+											"        },\r",
+											"        \"userId\": {\r",
+											"            \"type\": \"integer\"\r",
+											"        },\r",
+											"        \"done\": {\r",
+											"            \"type\": \"boolean\"\r",
+											"        },\r",
+											"        \"name\": {\r",
+											"            \"type\": \"string\"\r",
+											"        },\r",
+											"        \"deadline\": {\r",
+											"            \"type\": [\"string\", \"null\"]\r",
+											"        },\r",
+											"        \"progress\": {\r",
+											"            \"type\": \"integer\"\r",
+											"        },\r",
+											"        \"priority\": {\r",
+											"            \"type\": \"integer\"\r",
+											"        }\r",
+											"    }\r",
+											"}\r",
+											"\r",
+											"pm.test(\"Validate schema\", () => {\r",
+											"    pm.response.to.have.jsonSchema(schema);\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}{{newTaskPath}}",
+									"host": [
+										"{{domain}}{{newTaskPath}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Tasks With Query",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var data = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Responses status code\", () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Get all user tasks\", () => {\r",
+											"    pm.expect(data.length).to.equal(2)\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Get content type\", () => {\r",
+											"    pm.response.to.have.header(\"Content-Type\");\r",
+											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}{{newUserPath}}/tasks?priorityGTE=5&fromProgress=50&toProgress=100",
+									"host": [
+										"{{domain}}{{newUserPath}}"
+									],
+									"path": [
+										"tasks"
+									],
+									"query": [
+										{
+											"key": "priorityGTE",
+											"value": "5"
+										},
+										{
+											"key": "fromProgress",
+											"value": "50"
+										},
+										{
+											"key": "toProgress",
+											"value": "100"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Task Not Exist",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Responses status code\", () => {\r",
+											"    pm.response.to.have.status(404);\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}{{newUserPath}}/tasks/0",
+									"host": [
+										"{{domain}}{{newUserPath}}"
+									],
+									"path": [
+										"tasks",
+										"0"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "PATCH",
+					"item": [
+						{
+							"name": "Patch Task Complete",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code test\", () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Resource location in header test\", () => {\r",
+											"    pm.response.to.have.header(\"Location\");\r",
+											"   pm.response.to.be.header(\"Location\", pm.environment.get(\"newTaskPath\"));\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 200ms\", () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"done\": false,\r\n  \"name\": \"Project OAS\",\r\n  \"deadline\": \"2021-04-14T12:00:00Z\",\r\n  \"progress\": 90,\r\n  \"priority\": 20\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}{{newTaskPath}}",
+									"host": [
+										"{{domain}}{{newTaskPath}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Patch Task",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code test\", () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Resource location in header test\", () => {\r",
+											"    pm.response.to.have.header(\"Location\");\r",
+											"   pm.response.to.be.header(\"Location\", pm.environment.get(\"newTaskPath\"));\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 200ms\", () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"progress\": 100,\r\n  \"priority\": 10\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}{{newTaskPath}}",
+									"host": [
+										"{{domain}}{{newTaskPath}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "DELETE",
+					"item": [
+						{
+							"name": "Delete All Tasks",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Test delete no content\", () => {\r",
+											"    pm.response.to.have.status(204);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 200ms\", () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}{{newUserPath}}/tasks?done=true",
+									"host": [
+										"{{domain}}{{newUserPath}}"
+									],
+									"path": [
+										"tasks"
+									],
+									"query": [
+										{
+											"key": "done",
+											"value": "true"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Task",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Test delete no content\", () => {\r",
+											"    pm.response.to.have.status(204);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 200ms\", () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}{{newTaskPath}}",
+									"host": [
+										"{{domain}}{{newTaskPath}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Journal Entries",
+			"item": [
+				{
+					"name": "POST",
+					"item": [
+						{
+							"name": "Add Journal Entry Required",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"postman.setEnvironmentVariable(\"newEntryPath\", pm.response.headers.get('Location'));\r",
+											"\r",
+											"pm.test(\"Status code test\", () => {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Resource location in header test\", () => {\r",
+											"    pm.response.to.have.header(\"Location\");\r",
+											"   pm.response.to.be.header(\"Location\", pm.environment.get(\"newEntryPath\"));\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 200ms\", () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"date\": \"2021-04-14\",\r\n  \"summary\": \"Something about the user's day.\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}{{newUserPath}}/journal-entries",
+									"host": [
+										"{{domain}}{{newUserPath}}"
+									],
+									"path": [
+										"journal-entries"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Journal Entry",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code test\", () => {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Resource location in header test\", () => {\r",
+											"    pm.response.to.have.header(\"Location\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 200ms\", () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"date\": \"2021-04-20\",\r\n  \"summary\": \"Something about the user's day.\",\r\n  \"positives\": \"Some positive things that happened today\",\r\n  \"moodScore\": 95\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}{{newUserPath}}/journal-entries",
+									"host": [
+										"{{domain}}{{newUserPath}}"
+									],
+									"path": [
+										"journal-entries"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GET",
+					"item": [
+						{
+							"name": "Get Journal Entries",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var data = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Responses status code\", () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Get all journal entries\", () => {\r",
+											"    pm.expect(data.length).to.equal(2)\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Get content type\", () => {\r",
+											"    pm.response.to.have.header(\"Content-Type\");\r",
+											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}{{newUserPath}}/journal-entries",
+									"host": [
+										"{{domain}}{{newUserPath}}"
+									],
+									"path": [
+										"journal-entries"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get One Entry",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var data = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Responses status code\", () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"})\r",
+											"\r",
+											"\r",
+											"pm.test(\"Get content type\", () => {\r",
+											"    pm.response.to.have.header(\"Content-Type\");\r",
+											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');\r",
+											"})\r",
+											"\r",
+											"const schema = {\r",
+											"    \"properties\": {\r",
+											"        \"entryId\": {\r",
+											"        \"type\": \"integer\"\r",
+											"        },\r",
+											"        \"userId\": {\r",
+											"            \"type\": \"integer\"\r",
+											"        },\r",
+											"        \"date\": {\r",
+											"            \"type\": \"string\"\r",
+											"        },\r",
+											"        \"summary\": {\r",
+											"            \"type\": \"string\"\r",
+											"        },\r",
+											"        \"positives\": {\r",
+											"            \"type\": [\"string\", \"null\"]\r",
+											"        },\r",
+											"        \"moodScore\": {\r",
+											"            \"type\": \"integer\"\r",
+											"        }\r",
+											"    }\r",
+											"}\r",
+											"\r",
+											"pm.test(\"Validate schema\", () => {\r",
+											"    pm.response.to.have.jsonSchema(schema);\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}{{newEntryPath}}",
+									"host": [
+										"{{domain}}{{newEntryPath}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Journal Entries With Query",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var data = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Responses status code\", () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Get all journal entries\", () => {\r",
+											"    pm.expect(data.length).to.equal(1)\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Get content type\", () => {\r",
+											"    pm.response.to.have.header(\"Content-Type\");\r",
+											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}{{newUserPath}}/journal-entries?date=2021-04-20&moodScore=95",
+									"host": [
+										"{{domain}}{{newUserPath}}"
+									],
+									"path": [
+										"journal-entries"
+									],
+									"query": [
+										{
+											"key": "date",
+											"value": "2021-04-20"
+										},
+										{
+											"key": "moodScore",
+											"value": "95"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Entry Not Exist",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code test\", () => {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 200ms\", () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}{{newUserPath}}/journal-entries/0",
+									"host": [
+										"{{domain}}{{newUserPath}}"
+									],
+									"path": [
+										"journal-entries",
+										"0"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "PATCH",
+					"item": [
+						{
+							"name": "Patch Entry Complete",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code test\", () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Resource location in header test\", () => {\r",
+											"    pm.response.to.have.header(\"Location\");\r",
+											"   pm.response.to.be.header(\"Location\", pm.environment.get(\"newEntryPath\"));\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Response time is less than 200ms\", () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"date\": \"2021-04-02\",\r\n  \"summary\": \"Something about the user's day.\",\r\n  \"positives\": \"Some positive things that happened today\",\r\n  \"moodScore\": 95\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}{{newEntryPath}}",
+									"host": [
+										"{{domain}}{{newEntryPath}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Patch Entry",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code test\", () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Resource location in header test\", () => {\r",
+											"    pm.response.to.have.header(\"Location\");\r",
+											"   pm.response.to.be.header(\"Location\", pm.environment.get(\"newEntryPath\"));\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Response time is less than 200ms\", () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"positives\": \"Something positive\",\r\n  \"moodScore\": 100\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}{{newEntryPath}}",
+									"host": [
+										"{{domain}}{{newEntryPath}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "DELETE",
+					"item": [
+						{
+							"name": "Delete Entry",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Test delete no content\", () => {\r",
+											"    pm.response.to.have.status(204);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 200ms\", () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}{{newEntryPath}}",
+									"host": [
+										"{{domain}}{{newEntryPath}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Main User",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Test delete no content\", () => {\r",
+											"    pm.response.to.have.status(204);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 200ms\", () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}{{newUserPath}}",
+									"host": [
+										"{{domain}}{{newUserPath}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}

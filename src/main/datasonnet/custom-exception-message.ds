@@ -1,0 +1,6 @@
+local msg = ds.splitBy(payload, '&');
+{
+  message: msg[0],
+  httpStatus: ds.parseInt(msg[1]),
+  timestamp: ds.datetime.now()
+}

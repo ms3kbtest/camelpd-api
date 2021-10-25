@@ -1,0 +1,19 @@
+/** DataSonnet
+version=2.0
+output application/json
+input payload application/json
+*/
+local nullOrValue(param) =
+if(param in payload) then payload[param] else null;
+
+local toDateTime(dt) =
+if dt == null then null else
+ds.datetime.format(dt,"yyyy-MM-dd HH:mm:ss");
+
+{
+  date: nullOrValue('date'),
+  startTime: toDateTime(nullOrValue('startTime')),
+  endTime: toDateTime(nullOrValue('endTime')),
+  description: nullOrValue('description'),
+  appointmentNotes: nullOrValue('appointmentNotes'),
+}

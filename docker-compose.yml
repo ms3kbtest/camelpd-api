@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+
+  mysqldb:
+    container_name: some-mysql
+    image: mysql:latest
+    cap_add:
+      - SYS_NICE # CAP_SYS_NICE
+    networks:
+      - camelpdnet
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: "personaldevdb_camel"
+
+  camelpd:
+    container_name: camelpd
+    build: "."
+    networks:
+      - camelpdnet
+    ports:
+      - '8090:8090'
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/personaldevdb_camel?createDatabaseIfNotExist=true
+    depends_on:
+      - mysqldb
+    restart: on-failure
+
+networks:
+  camelpdnet:
+    driver: bridge

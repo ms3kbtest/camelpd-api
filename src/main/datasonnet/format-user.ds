@@ -1,0 +1,39 @@
+local aggregateMap = ds.mapEntries(ds.groupBy(payload, function(item) item.id), function(value,key,index)
+    {user : value});
+
+local appointmentArray(num) =  ds.map(ds.filter(aggregateMap[num].user, function(item) item.date != null), function(item) {
+        appointmentId : item.child_id,
+        userId : item.user_id,
+        date: item.date,
+        startTime: item.start_time,
+        endTime: item.end_time,
+        description: item.description,
+        appointmentNotes: item.appointment_notes
+    });
+
+local tasksArray(num) = ds.map(ds.filter(aggregateMap[num].user, function(item) item.done != null), function(item) {
+        taskId : item.child_id,
+        userId : item.user_id,
+        done: if(item.done == 0) then false else true,
+        name: item.name,
+        deadline: item.deadline,
+        progress: item.progress,
+        priority: item.priority
+    });
+
+ds.map(ds.distinctBy(payload, function(item) item.id), function(item,index)
+{
+    userId: item.id,
+    firstName: item.first_name,
+    lastName: item.last_name,
+    username: item.username,
+    email: item.email,
+    birthday: item.birthday,
+    settings: {
+        appAlerts: item.app_alerts,
+        emailNotifications: item.email_notifications,
+        theme: item.theme
+    },
+    appointments: appointmentArray(index),
+    tasks: tasksArray(index)
+})[0]

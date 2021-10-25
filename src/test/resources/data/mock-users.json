@@ -1,0 +1,27 @@
+[
+  {
+    "userId": 2,
+    "firstName": "Johnny",
+    "lastName": "Boy",
+    "username": "fjgfhbgn",
+    "email": "jfggg",
+    "birthday": "1950-02-03",
+    "settings": {
+      "appAlerts": 0,
+      "emailNotifications": 0,
+      "theme": 0
+    },
+    "appointments": [],
+    "tasks": [
+      {
+        "taskId": 2,
+        "userId": 2,
+        "done": true,
+        "name": "name",
+        "deadline": "2019-04-04 00:00:00.0",
+        "progress": 0,
+        "priority": 10
+      }
+    ]
+  }
+]

@@ -1,0 +1,9 @@
+ds.map(payload, function(item){
+    appointmentId : item.appointment_id,
+    userId : item.user_id,
+    date: item.date,
+    startTime : item.start_time,
+    endTime: item.end_time,
+    description: item.description,
+    appointmentNotes: item.appointment_notes
+})

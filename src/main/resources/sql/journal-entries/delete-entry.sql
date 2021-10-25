@@ -1,0 +1,1 @@
+DELETE FROM journal_entries_table WHERE entry_id = :#journalEntryId;

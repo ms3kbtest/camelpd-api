@@ -1,0 +1,1330 @@
+---
+openapi: 3.0.0
+info:
+  title: Personal Development API
+  description: Helps track and manage a user's day to day activities through appointments, tasks, and journal entries.
+  contact:
+    email: kbanaag@ms3-inc.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.1.3
+servers:
+- url: http://camelpd.com/api
+  description: SwaggerHub API Auto Mocking
+security:
+  - bearerAuth: []
+tags:
+- name: Users
+  description: Personal Development users.
+- name: Appointments
+  description: Collection of user appointments.
+- name: Tasks
+  description: A user's task list.
+- name: Journal Entries
+  description: Collection of a user's journal entries.
+paths:
+  /users:
+    get:
+      tags:
+      - Users
+      summary: Get all the users
+      description: Get all users that have personal development accounts.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+    post:
+      tags:
+      - Users
+      summary: Create a new user
+      requestBody:
+        description: The required fields of the user object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequired'
+        required: true
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "409":
+          description: Conflict
+        "500":
+          description: Internal Server Error
+  /users/{userId}:
+    get:
+      tags:
+      - Users
+      summary: Get a user.
+      description: Get a specific user that matches the userId
+      parameters:
+      - name: userId
+        in: path
+        description: ID of the user.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+    delete:
+      tags:
+      - Users
+      summary: Delete a specific user
+      parameters:
+      - name: userId
+        in: path
+        description: ID of the user.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+    patch:
+      tags:
+      - Users
+      summary: Update a specific user
+      parameters:
+      - name: userId
+        in: path
+        description: ID of the user.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        description: A user object without ID
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSetting'
+        required: true
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "409":
+          description: Conflict
+        "500":
+          description: Internal Server Error
+  /users/{userId}/appointments:
+    get:
+      tags:
+      - Appointments
+      summary: Get appointments of a user.
+      description: Get all the appointments of a specific user. Can be filtered by adding a date query and only get the appointments of the given date.
+      parameters:
+      - name: userId
+        in: path
+        description: ID of the user.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      - name: date
+        in: query
+        description: A date field.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: date
+      - name: fromDate
+        in: query
+        description: A start date.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: date
+      - name: toDate
+        in: query
+        description: An end date for query.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: date
+      - name: descKeywords
+        in: query
+        description: Query from keywords in a description.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Appointment'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+    post:
+      tags:
+      - Appointments
+      summary: Create a new appointment entry.
+      parameters:
+      - name: userId
+        in: path
+        description: ID of the user.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        description: The required fields of an appointment object without ID
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppointmentRequired'
+        required: true
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "409":
+          description: Conflict
+        "500":
+          description: Internal Server Error
+  /users/{userId}/appointments/{appointmentId}:
+    get:
+      tags:
+      - Appointments
+      summary: Get a single appointment.
+      parameters:
+      - name: userId
+        in: path
+        description: ID of the user.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      - name: appointmentId
+        in: path
+        description: ID of the appointment.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Appointment'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+    delete:
+      tags:
+      - Appointments
+      summary: Delete an appointment.
+      parameters:
+      - name: userId
+        in: path
+        description: ID of the user.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      - name: appointmentId
+        in: path
+        description: ID of the appointment.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+    patch:
+      tags:
+      - Appointments
+      summary: Update an appointment
+      parameters:
+      - name: userId
+        in: path
+        description: ID of the user.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      - name: appointmentId
+        in: path
+        description: ID of the appointment.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        description: An appointment object with the extra fields
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppointmentExtra'
+        required: true
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+  /users/{userId}/tasks:
+    get:
+      tags:
+      - Tasks
+      summary: Get user tasks
+      description: Get all user tasks. Can be filtered by making simple queries on done and deadline, and range queries on priority and progress.
+      parameters:
+      - name: userId
+        in: path
+        description: ID of the user.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      - name: done
+        in: query
+        description: Is task done?
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      - name: priority
+        in: query
+        description: Task priority
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      - name: progress
+        in: query
+        description: Current task progression
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      - name: deadline
+        in: query
+        description: Current task deadline
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: date-time
+      - name: priorityGTE
+        in: query
+        description: Query for tasks with priority greater than or equal.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      - name: fromProgress
+        in: query
+        description: Start of range query for progress.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      - name: toProgress
+        in: query
+        description: End of range query for progress.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+    post:
+      tags:
+      - Tasks
+      summary: Create a new task.
+      parameters:
+      - name: userId
+        in: path
+        description: ID of the user.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        description: The required fields of a task object without an ID
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskRequired'
+        required: true
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "409":
+          description: Conflict
+        "500":
+          description: Internal Server Error
+    delete:
+      tags:
+      - Tasks
+      summary: Delete all tasks
+      parameters:
+      - name: done
+        in: query
+        description: Is task done?
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      - name: userId
+        in: path
+        description: ID of the user.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+  /users/{userId}/tasks/{taskId}:
+    get:
+      tags:
+      - Tasks
+      summary: Get a single task
+      description: Get the task that matches the taskId
+      parameters:
+      - name: userId
+        in: path
+        description: ID of the user.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      - name: taskId
+        in: path
+        description: Id of the task
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+    delete:
+      tags:
+      - Tasks
+      summary: Delete a task
+      parameters:
+      - name: userId
+        in: path
+        description: ID of the user.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      - name: taskId
+        in: path
+        description: Id of the task
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+    patch:
+      tags:
+      - Tasks
+      summary: Update a task
+      parameters:
+      - name: userId
+        in: path
+        description: ID of the user.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      - name: taskId
+        in: path
+        description: Id of the task
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        description: A task with the extra fields
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskExtra'
+        required: true
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+  /users/{userId}/journal-entries:
+    get:
+      tags:
+      - Journal Entries
+      summary: Get all journal entries of a user
+      description: Get all journal entries of a user. Can be filtered by queries on the date and mood score.
+      parameters:
+      - name: userId
+        in: path
+        description: ID of the user.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      - name: date
+        in: query
+        description: A date field.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: date
+      - name: moodScore
+        in: query
+        description: Quantified mood score of a user for a given journal entry.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      - name: fromMoodScore
+        in: query
+        description: Start of range query for mood score
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      - name: toMoodScore
+        in: query
+        description: End of range query for mood score
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/JournalEntry'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+    post:
+      tags:
+      - Journal Entries
+      summary: Create a journal entry.
+      parameters:
+      - name: userId
+        in: path
+        description: ID of the user.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        description: The required fields of a journal entry without an ID
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JournalEntryRequired'
+        required: true
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "409":
+          description: Conflict
+        "500":
+          description: Internal Server Error
+  /users/{userId}/journal-entries/{journalEntryId}:
+    get:
+      tags:
+      - Journal Entries
+      summary: Get a single entry
+      description: Get the task that matches the taskId
+      parameters:
+      - name: userId
+        in: path
+        description: ID of the user.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      - name: journalEntryId
+        in: path
+        description: ID of a journal entry.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JournalEntry'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+    delete:
+      tags:
+      - Journal Entries
+      summary: Delete a journal entry
+      parameters:
+      - name: userId
+        in: path
+        description: ID of the user.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      - name: journalEntryId
+        in: path
+        description: ID of a journal entry.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+    patch:
+      tags:
+      - Journal Entries
+      summary: Update a journal entry
+      parameters:
+      - name: userId
+        in: path
+        description: ID of the user.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      - name: journalEntryId
+        in: path
+        description: ID of a journal entry.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      requestBody:
+        description: A journal entry with extra fields
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JournalEntryExtra'
+        required: true
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    User:
+      allOf:
+      - required:
+        - userId
+        type: object
+        properties:
+          userId:
+            type: integer
+            example: 1
+      - $ref: '#/components/schemas/UserRequired'
+      - type: object
+        properties:
+          settings:
+            $ref: '#/components/schemas/Setting'
+      - type: object
+        properties:
+          appointments:
+            type: array
+            items:
+              $ref: '#/components/schemas/Appointment'
+      - type: object
+        properties:
+          tasks:
+            type: array
+            items:
+              $ref: '#/components/schemas/Task'
+    UserSetting:
+      allOf:
+      - $ref: '#/components/schemas/UserNotRequired'
+      - type: object
+        properties:
+          settings:
+            $ref: '#/components/schemas/Setting'
+    UserNotRequired:
+      type: object
+      properties:
+        firstName:
+          type: string
+          example: Johnny
+        lastName:
+          type: string
+          example: Boy
+        username:
+          type: string
+          example: jboy21
+        email:
+          type: string
+          example: jboy21@hotmail.com
+        birthday:
+          type: string
+          format: date
+          example: "1950-02-03"
+    UserRequired:
+      required:
+      - birthday
+      - email
+      - firstName
+      - lastName
+      - username
+      type: object
+      properties:
+        firstName:
+          type: string
+          example: Johnny
+        lastName:
+          type: string
+          example: Boy
+        username:
+          type: string
+          example: jboy21
+        email:
+          type: string
+          example: jboy21@hotmail.com
+        birthday:
+          type: string
+          format: date
+          example: "1950-02-03"
+    Setting:
+      type: object
+      properties:
+        appAlerts:
+          type: boolean
+          example: false
+        emailNotifications:
+          type: boolean
+          example: false
+        theme:
+          type: integer
+          example: 0
+    Appointment:
+      allOf:
+      - required:
+        - appointmentId
+        - userId
+        type: object
+        properties:
+          appointmentId:
+            type: integer
+            example: 1
+          userId:
+            type: integer
+            example: 1
+      - $ref: '#/components/schemas/AppointmentRequired'
+      - $ref: '#/components/schemas/AppointmentExtra'
+    AppointmentNotRequired:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+          example: "2020-12-12"
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+    AppointmentRequired:
+      required:
+      - date
+      - endTime
+      - startTime
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+          example: "2020-12-12"
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+    AppointmentExtra:
+      allOf:
+      - $ref: '#/components/schemas/AppointmentNotRequired'
+      - type: object
+        properties:
+          description:
+            type: string
+            example: Doctor's appointment
+          appointmentNotes:
+            type: string
+            example: Need more sleep, and a healthier diet.
+    Task:
+      allOf:
+      - required:
+        - taskId
+        - userId
+        type: object
+        properties:
+          taskId:
+            type: integer
+            example: 1
+          userId:
+            type: integer
+            example: 1
+      - $ref: '#/components/schemas/TaskRequired'
+      - $ref: '#/components/schemas/TaskExtra'
+    TaskRequired:
+      required:
+      - done
+      - name
+      type: object
+      properties:
+        done:
+          type: boolean
+          example: false
+        name:
+          type: string
+          example: Project OAS
+    TaskExtra:
+      type: object
+      properties:
+        done:
+          type: boolean
+          example: false
+        name:
+          type: string
+          example: Project OAS
+        deadline:
+          type: string
+          format: date-time
+          example: "2021-04-02T00:00:00.000Z"
+        progress:
+          type: integer
+          example: 50
+        priority:
+          type: integer
+          example: 10
+    JournalEntry:
+      allOf:
+      - required:
+        - entryId
+        - userId
+        type: object
+        properties:
+          entryId:
+            type: integer
+            example: 1
+          userId:
+            type: integer
+            example: 1
+      - $ref: '#/components/schemas/JournalEntryRequired'
+      - $ref: '#/components/schemas/JournalEntryExtra'
+    JournalEntryRequired:
+      required:
+      - date
+      - summary
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+          example: "2021-04-02"
+        summary:
+          type: string
+          example: Something about the user's day.
+    JournalEntryExtra:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+          example: "2021-04-02"
+        summary:
+          type: string
+          example: Something about the user's day.
+        positives:
+          type: string
+          example: Some positive things that happened today
+        moodScore:
+          type: integer
+          example: 95
+  responses:
+    "200":
+      description: OK
+    "200Users":
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/User'
+    "200User":
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/User'
+    "200Appointments":
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Appointment'
+    "200Appointment":
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Appointment'
+    "200Tasks":
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Task'
+    "200Task":
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Task'
+    "200JournalEntries":
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/JournalEntry'
+    "200JournalEntry":
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/JournalEntry'
+    "201":
+      description: Created
+    "204":
+      description: No Content
+    "400":
+      description: Bad Request
+    "401":
+      description: Unauthorized
+    "404":
+      description: Not Found
+    "409":
+      description: Conflict
+    "500":
+      description: Internal Server Error
+  parameters:
+    userId:
+      name: userId
+      in: path
+      description: ID of the user.
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: integer
+        format: int64
+    appointmentId:
+      name: appointmentId
+      in: path
+      description: ID of the appointment.
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: integer
+        format: int64
+    date:
+      name: date
+      in: query
+      description: A date field.
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+        format: date
+    fromDate:
+      name: fromDate
+      in: query
+      description: A start date.
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+        format: date
+    toDate:
+      name: toDate
+      in: query
+      description: An end date for query.
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+        format: date
+    descKeywords:
+      name: descKeywords
+      in: query
+      description: Query from keywords in a description.
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+    taskId:
+      name: taskId
+      in: path
+      description: Id of the task
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: integer
+        format: int64
+    done:
+      name: done
+      in: query
+      description: Is task done?
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: boolean
+    priority:
+      name: priority
+      in: query
+      description: Task priority
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: integer
+    progress:
+      name: progress
+      in: query
+      description: Current task progression
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: integer
+    deadline:
+      name: deadline
+      in: query
+      description: Current task deadline
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+        format: date-time
+    priorityGTE:
+      name: priorityGTE
+      in: query
+      description: Query for tasks with priority greater than or equal.
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: integer
+    fromProgress:
+      name: fromProgress
+      in: query
+      description: Start of range query for progress.
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: integer
+    toProgress:
+      name: toProgress
+      in: query
+      description: End of range query for progress.
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: integer
+    moodScore:
+      name: moodScore
+      in: query
+      description: Quantified mood score of a user for a given journal entry.
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: integer
+    fromMoodScore:
+      name: fromMoodScore
+      in: query
+      description: Start of range query for mood score
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: integer
+    toMoodScore:
+      name: toMoodScore
+      in: query
+      description: End of range query for mood score
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: integer
+    journalEntryId:
+      name: journalEntryId
+      in: path
+      description: ID of a journal entry.
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: integer

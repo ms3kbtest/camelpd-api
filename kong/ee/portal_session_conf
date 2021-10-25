@@ -1,0 +1,1 @@
+{"cookie_name": "portal_session", "secret": "change-this-secret", "storage": "kong", "cookie_secure": false}

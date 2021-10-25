@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: camelpd-api-deployment
+  namespace: camelpd-dev
+spec:
+  replicas: 3
+  selector:
+    matchLabels:  
+      app: camelpd-api-deployment
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: camelpd-api-deployment
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8090"
+        prometheus.io/path: /actuator/prometheus
+    spec:
+      containers:
+      - name: camelpd
+        image: camelpd:1.0.0
+        env: 
+        - name: SPRING_DATASOURCE_URL
+          value: jdbc:mysql://mysql-svc:3306/personaldevdb_camel?createDatabaseIfNotExist=true
+        - name: SPRING_DATASOURCE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: mysqldb-secret
+              key: username
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysqldb-secret
+              key: password
+        ports:
+        - containerPort: 8090
+        imagePullPolicy: Never # dont pull/check docker registry or minikube

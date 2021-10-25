@@ -1,0 +1,91 @@
+// init secrets and namespace
+kubectl apply -f ./kubernetes/camelpd-api-secrets.yaml
+
+// run mysql db first
+kubectl apply -f ./kubernetes/camelpd-api-mysql.yaml
+
+// switch to camelpd-dev namespace
+kubectl config use-context dev
+
+// expose the service to port 3306 so the api can access it
+// need to do twice on creation of file after connection to workbench
+kubectl port-forward statefulset/mysql-sfs 3306
+
+// ingress controller
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.45.0/deploy/static/provider/cloud/deploy.yaml
+
+// run the camel application deployment
+kubectl apply -f ./kubernetes/camelpd-api-deployment.yaml
+
+// check logs to see if camel api running
+kubectl get pods
+kubectl logs <pod_name>
+
+----------------- END ------------------
+// cmd for testing
+curl -i -H "host: camelpd.com" localhost:80/api/users
+curl -i camelpd.com/api/users
+
+// tear down
+kubectl delete -f ./kubernetes/camelpd-api-deployment.yaml
+kubectl delete -f ./kubernetes/camelpd-api-mysql.yaml
+kubectl delete -f ./kubernetes/camelpd-api-secrets.yaml
+kubectl config use-context docker-desktop
+
+
+// create namespace 
+kubectl apply -f ./kubernetes/camelpd-api-namespaces.yaml
+
+// check which context were using and make sure were not already on dev context
+kubectl config current-context
+// view different contexts
+kubectl config view
+
+// create a new context with corresponsing namespace if dev/prod doesnt exist
+// do this first so we dont need to add namespaces on all other yaml files
+kubectl config set-context dev \
+  --namespace=camelpd-dev \
+  --cluster=docker-desktop \
+  --user=docker-desktop
+
+// use context that we created 
+kubectl config use-context dev
+// check which context were using
+kubectl config current-context
+
+// init secrets
+kubectl apply -f ./kubernetes/camelpd-api-secrets.yaml
+
+// run mysql db first
+kubectl apply -f ./kubernetes/camelpd-api-mysql.yaml
+
+// expose the service to port 3306 so the api can access it
+// need to do twice on creation of file after connection to workbench
+kubectl port-forward statefulset/mysql-sfs 3306
+
+// run the camel application deployment
+kubectl apply -f ./kubernetes/camelpd-api-deployment.yaml
+
+// run ingress
+kubectl apply -f ./kubernetes/camelpd-api-ingress.yaml
+
+// check logs of pod to make sure it ran, also helps debugging if didnt run
+kubectl get pods --all-namespaces
+kubectl logs <pod_name>
+
+// everything should work after this
+
+curl -i -H "host: camelpd.com" localhost:80/api/users
+curl -i camelpd.com/api/users
+
+//take down
+// delete db and api refs
+kubectl delete -f ./kubernetes/camelpd-api-ingress.yaml
+kubectl delete -f ./kubernetes/camelpd-api-deployment.yaml
+kubectl delete -f ./kubernetes/camelpd-api-mysql.yaml
+kubectl delete -f ./kubernetes/camelpd-api-secrets.yaml
+// remove namespaces
+kubectl delete namespace camelpd-dev
+kubectl delete namespace camelpd-prod
+// switch back to default namespace
+kubectl config use-context docker-desktop

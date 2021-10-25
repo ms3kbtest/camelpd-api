@@ -1,0 +1,11 @@
+[
+  {
+    "taskId": 2,
+    "userId": 3,
+    "done": false,
+    "name": "Project OAS",
+    "deadline": "2018-03-20T13:00:00Z",
+    "progress": 50,
+    "priority": 10
+  }
+]

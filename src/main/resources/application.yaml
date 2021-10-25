@@ -1,0 +1,41 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost/personaldevdb_camel?createDatabaseIfNotExist=true
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    initialization-mode: always
+    schema: classpath:sql/schema.sql
+  main:
+    banner-mode: off
+  application:
+    name: ${project.artifactId}
+
+camel:
+  springboot:
+    name: ${project.artifactId}
+    use-mdc-logging: true
+  rest:
+    port: 8090
+    context-path: /api
+management:
+  endpoint:
+    camelroutes:
+      enabled: true
+      read-only: true
+    health:
+      enabled: true
+      probes:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: info,health,camelroutes,metrics,prometheus
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}

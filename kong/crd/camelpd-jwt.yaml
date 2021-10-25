@@ -1,0 +1,16 @@
+apiVersion: configuration.konghq.com/v1
+kind: KongPlugin
+metadata:
+  name: camelpd-api-jwt
+disabled: true
+plugin: jwt
+---
+apiVersion: configuration.konghq.com/v1
+kind: KongConsumer
+metadata:
+  name: jwt-user
+  annotations:
+    kubernetes.io/ingress.class: kong
+username: jwt-user
+credentials:
+- app-user-jwt

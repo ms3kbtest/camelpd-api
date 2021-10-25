@@ -1,0 +1,9 @@
+{
+  "appointmentId": 2,
+  "userId": 3,
+  "date": "2020-01-02",
+  "startTime": "2018-03-20T13:00:00Z",
+  "endTime": "2018-03-20T14:00:00Z",
+  "description": "Sometext",
+  "appointmentNotes": "Somenotes"
+}

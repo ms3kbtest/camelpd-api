@@ -1,0 +1,59 @@
+# Basic configuration for Kong without the ingress controller, using the Postgres subchart
+# This installation does not create an Ingress or LoadBalancer Service for
+# the Admin API. It requires port-forwards to access without further
+# configuration to add them, e.g.:
+# kubectl port-forward deploy/your-deployment-kong 8001:8001
+
+image:
+  repository: kong
+  tag: latest
+
+env:
+  prefix: /kong_prefix/
+  database: postgres
+  role: control_plane
+  cluster_cert: /etc/secrets/kong-cluster-cert/tls.crt
+  cluster_cert_key: /etc/secrets/kong-cluster-cert/tls.key
+
+admin:
+  enabled: true
+  http:
+    enabled: true
+    servicePort: 8001
+    containerPort: 8001
+
+cluster:
+  enabled: true
+  tls:
+    enabled: true
+    servicePort: 8005
+    containerPort: 8005
+
+proxy:
+  enabled: false
+
+secretVolumes:
+- kong-cluster-cert
+
+postgresql:
+  enabled: true
+  postgresqlUsername: kong
+  postgresqlDatabase: kong
+  service:
+    port: 5432
+
+# New addition for custom plugins below
+plugins:
+  configMaps:
+    - pluginName: name-restrict
+      name: kong-plugin-name-restrict
+
+ingressController:
+  enabled: true
+  installCRDs: false
+  env:
+    publish_service: camelpd-dev/dp-release-kong-proxy
+#
+# You can uncomment these lines above if you are choosing to use the ingress controller.
+# If using the ingress controller, you must also specify the DP proxy service as its publish target to keep Ingress status information up to date:
+# Replace hybrid with your DP nodes' namespace (default if no namespace was specified) and example-release-data with the name of the DP release.

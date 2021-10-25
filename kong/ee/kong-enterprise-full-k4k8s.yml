@@ -1,0 +1,147 @@
+# Instructions for configuration/creation of secrets for this file below, for the kong-session-config refer here:
+# Following is a basic session config for training and practice ...
+# Create file admin_gui_session_conf with value: {"cookie_name":"04tm34l","secret":"change-this-secret","storage":"kong","cookie_secure":false}
+# Create file portal_session_conf with value: {"cookie_name": "portal_session", "secret": "change-this-secret", "storage": "kong", "cookie_secure": false}
+# Create secret by running: kubectl create secret generic kong-session-config --from-file=admin_gui_session_conf --from-file=portal_session_conf
+#
+# For the kong-enterprise-superuser-password refer here:
+# Create secret using this command to set default kong_admin password
+# kubectl create secret generic kong-enterprise-superuser-password --from-literal=password=<your-password>
+#
+# For the kong-enterprise-license refer here:
+# License needed for this file, after obtaining it, run this command to generate secret
+# kubectl create secret generic kong-enterprise-license --from-file=license=./license.json
+#
+# Kong Manager is exposed as a NodePort at port 32080. In order for Kong Manager to access Admin API's port, need to port forward port 8001
+# kubectl port-forward deploy/kong-ee-release-kong 8001:8001
+#
+# Access Kong Manager at localhost:32080/
+image:
+  repository: kong-ee
+  tag: latest
+
+env:
+  prefix: /kong_prefix/
+  database: postgres
+
+  password:
+    valueFrom:
+      secretKeyRef:
+        name: kong-enterprise-superuser-password
+        key: password
+
+admin:
+  enabled: true
+  http:
+    enabled: true
+
+proxy:
+  enabled: true
+  type: LoadBalancer
+  annotations: {}
+  http:
+    enabled: true
+    servicePort: 80
+    containerPort: 8000
+    parameters: []
+  tls:
+    enabled: true
+    servicePort: 443
+    containerPort: 8443
+    parameters:
+    - http2
+  stream: {}
+  externalIPs: []
+
+enterprise:
+  enabled: true
+  license_secret: kong-enterprise-license
+  vitals:
+    enabled: true
+  portal:
+    enabled: true
+  rbac:
+    enabled: true
+    admin_gui_auth: basic-auth
+    session_conf_secret: kong-session-config
+  smtp:
+    enabled: false
+
+manager:
+  enabled: true
+  type: NodePort
+  http:
+    enabled: true
+    servicePort: 8002
+    containerPort: 8002
+    nodePort: 32080
+    parameters: []
+  tls:
+    enabled: true
+    servicePort: 8445
+    containerPort: 8445
+    parameters:
+    - http2
+  externalIPs: []
+
+portal:
+  enabled: true
+  type: NodePort
+  annotations:
+    konghq.com/protocol: "https"
+  http:
+    enabled: true
+    servicePort: 8003
+    containerPort: 8003
+    parameters: []
+  tls:
+    enabled: true
+    servicePort: 8446
+    containerPort: 8446
+    parameters:
+    - http2
+  externalIPs: []
+
+portalapi:
+  enabled: true
+  type: NodePort
+  annotations:
+    konghq.com/protocol: "https"
+  http:
+    enabled: true
+    servicePort: 8004
+    containerPort: 8004
+    parameters: []
+  tls:
+    enabled: true
+    servicePort: 8447
+    containerPort: 8447
+    parameters:
+    - http2
+  externalIPs: []
+
+postgresql:
+  enabled: true
+  postgresqlUsername: kong
+  postgresqlDatabase: kong
+  service:
+    port: 5432
+
+# New addition for custom plugins below
+# plugins:
+#   configMaps:
+#     - pluginName: name-restrict
+#       name: kong-plugin-name-restrict
+#     - pluginName: custom-json-request-validation
+#       name: kong-plugin-custom-json-request-validation
+
+ingressController:
+  enabled: true
+  installCRDs: false
+  env:
+    kong_admin_tls_skip_verify: 'true'
+    kong_admin_token:
+      valueFrom:
+        secretKeyRef:
+          name: kong-enterprise-superuser-password
+          key: password

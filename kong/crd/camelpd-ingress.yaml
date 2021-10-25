@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: camelpd-api
+  namespace: camelpd-dev
+  annotations:
+    kubernetes.io/ingress.class: kong
+spec:
+  rules:
+  - host: camelpd.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: camelpd-api-dpl-svc
+            port:
+              number: 8090

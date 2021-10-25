@@ -1,0 +1,11 @@
+apiVersion: configuration.konghq.com/v1
+kind: KongPlugin
+metadata:
+  name: custom-json-request-validation
+config:
+  oasFileName: "1"
+  portalUrl: "https://jsonplaceholder.typicode.com/todos/"
+  methods:
+    - "PATCH"
+    - "POST"
+plugin: custom-json-request-validation

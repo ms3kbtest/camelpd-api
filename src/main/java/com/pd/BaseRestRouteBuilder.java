@@ -1,0 +1,105 @@
+package com.pd;
+
+import com.datasonnet.document.DefaultDocument;
+import com.datasonnet.document.Document;
+import com.datasonnet.document.MediaTypes;
+import com.pd.exception.BadRequestException;
+import com.pd.exception.ResourceNotFoundException;
+import org.apache.camel.language.datasonnet.DatasonnetExpression;
+import com.ms3_inc.tavros.extensions.rest.OperationResult;
+import com.ms3_inc.tavros.extensions.rest.exception.RestException;
+import org.apache.camel.Exchange;
+import org.apache.camel.Processor;
+import org.apache.camel.builder.endpoint.EndpointRouteBuilder;
+
+/**
+ * This class centralizes exception handling for all Camel routes.  Extend this class for all RouteBuilder classes
+ * in the application.  Currently, two handlers are included:
+ * <ul>
+ * <li>RestException - malformed requests, etc.</li>
+ * <li>Exception - everything else returns a 500 status code.</li>
+ * </ul>
+ * These can also be used an examples of how to handle more specific exceptions.
+ *
+ * @author Maven Archetype (camel-oas-archetype)
+ */
+public class BaseRestRouteBuilder extends EndpointRouteBuilder {
+    protected DatasonnetExpression datasonnetEx(String expression) {
+        return (DatasonnetExpression) getContext().resolveLanguage("datasonnet").createExpression(expression);
+    }
+
+    protected DatasonnetExpression datasonnetEx(String expression, Class<?> resultType) {
+        Object[] properties = new Object[3];
+        properties[0] = resultType;
+        return (DatasonnetExpression) getContext().resolveLanguage("datasonnet").createExpression(expression, properties);
+    }
+
+    private static final Processor REST_EXCEPTION_PROCESSOR = ex -> {
+        RestException exc = ex.getProperty(Exchange.EXCEPTION_CAUGHT, RestException.class);
+
+        OperationResult result = ex.getMessage()
+            .getHeader(OperationResult.EXCHANGE_OPERATION_RESULT, new OperationResult(), OperationResult.class)
+            .addMessage(exc.getOperationResultMessage());
+
+        ex.getMessage().setHeader(Exchange.HTTP_RESPONSE_CODE, exc.httpStatusCode().orElse(500));
+        ex.getMessage().setHeader(OperationResult.EXCHANGE_OPERATION_RESULT, result);
+    };
+
+    @SuppressWarnings("unused")
+    private static final Processor UNWRAP_DOCUMENT = ex -> {
+        Object doc = ex.getMessage().getBody();
+        if (doc instanceof Document) {
+            ex.getMessage().setBody(((Document<?>) doc).getContent());
+            ex.getMessage().setHeader(Exchange.CONTENT_TYPE, ((Document<?>) doc).getMediaType().toString());
+        }
+    };
+
+    @Override
+    public void configure() throws Exception {
+        onException(RestException.class)
+            .routeId("rest-exception-policy")
+            .handled(true)
+            .logHandled(true)
+            .logStackTrace(true)
+            .process(REST_EXCEPTION_PROCESSOR)
+            .setBody(constant(DefaultDocument.NULL_INSTANCE))
+            .transform(datasonnetEx("resource:classpath:rest-exception.ds", String.class)
+                    .outputMediaType(MediaTypes.APPLICATION_JSON))
+        ;
+
+        onException(Exception.class)
+            .routeId("exception-policy")
+            .handled(true)
+            .logHandled(true)
+            .logStackTrace(true)
+            .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(500))
+            .setBody(constant(DefaultDocument.NULL_INSTANCE))
+            .transform(datasonnetEx("resource:classpath:exception.ds", String.class)
+                    .outputMediaType(MediaTypes.APPLICATION_JSON))
+        ;
+
+        // 400 Bad Request
+        onException(BadRequestException.class)
+                .handled(true)
+                .logHandled(true)
+                .logStackTrace(true)
+                .transform(exceptionMessage().append('&').append(400))
+                .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(400))
+                .transform(datasonnetEx("resource:classpath:custom-exception-message.ds", String.class)
+                        .bodyMediaType(MediaTypes.APPLICATION_JAVA)
+                        .outputMediaType(MediaTypes.APPLICATION_JSON))
+        ;
+
+        // 404 Resource Not Found
+        onException(ResourceNotFoundException.class)
+                .handled(true)
+                .logHandled(true)
+                .logStackTrace(true)
+                .transform(exceptionMessage().append('&').append(404))
+                .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(404))
+                .transform(datasonnetEx("resource:classpath:custom-exception-message.ds", String.class)
+                        .bodyMediaType(MediaTypes.APPLICATION_JAVA)
+                        .outputMediaType(MediaTypes.APPLICATION_JSON))
+        ;
+    }
+}

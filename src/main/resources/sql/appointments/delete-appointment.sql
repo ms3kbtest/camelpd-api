@@ -1,0 +1,1 @@
+DELETE FROM appointments_table WHERE appointment_id = :#appointmentId;

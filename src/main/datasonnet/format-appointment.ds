@@ -1,0 +1,10 @@
+local item = payload[0];
+{
+    appointmentId : item.appointment_id,
+    userId : item.user_id,
+    date: item.date,
+    startTime : item.start_time,
+    endTime: item.end_time,
+    description: item.description,
+    appointmentNotes: item.appointment_notes
+}

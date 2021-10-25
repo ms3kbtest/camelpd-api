@@ -1,0 +1,1 @@
+SELECT * FROM appointments_table WHERE appointment_id = :#appointmentId AND user_id = :#userId;

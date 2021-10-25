@@ -1,0 +1,22 @@
+/** DataSonnet
+version=2.0
+output application/json
+input payload application/json
+*/
+local nullOrValue(param) =
+if(param in payload) then payload[param] else null;
+
+local toDateTime(dt) =
+if dt == null then null else
+ds.datetime.format(dt,"yyyy-MM-dd HH:mm:ss");
+
+local zeroOrValue(val) =
+if val == null then 0 else val;
+
+{
+  deadline: toDateTime(nullOrValue('deadline')),
+  done: nullOrValue('done'),
+  name: nullOrValue('name'),
+  priority: zeroOrValue(nullOrValue('priority')),
+  progress: zeroOrValue(nullOrValue('progress')),
+}
