@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
       - name: camelpd
-        image: camelpd:1.0.1
+        image: kbstaging.azurecr.io/camelpd:1.0.0
         env: 
         - name: SPRING_DATASOURCE_URL
           value: jdbc:mysql://mysql-svc:3306/personaldevdb_camel?createDatabaseIfNotExist=true
@@ -40,4 +40,6 @@ spec:
               key: password
         ports:
         - containerPort: 8090
-        imagePullPolicy: Never # dont pull/check docker registry or minikube
+        imagePullPolicy: Always # dont pull/check docker registry or minikube
+      imagePullSecrets:
+      - name: acr-secret # need to create a kubeseal secret for this
